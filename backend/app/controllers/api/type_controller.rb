@@ -8,7 +8,7 @@ class Api::TypeController < ApplicationController
 
   # GET /api/type/1 or /api/type/1.json
   def show
-    if @type.nil?
+    if @type.blank?
       render json: {
         result: {},
         description: "Id doesnt exists"

@@ -8,7 +8,7 @@ class Api::CategoryController < ApplicationController
 
   # GET /api/category/1 or /api/category/1.json
   def show
-    if @category.nil?
+    if @category.blank?
       render json: {
         result: {},
         description: "Id doesnt exists"
