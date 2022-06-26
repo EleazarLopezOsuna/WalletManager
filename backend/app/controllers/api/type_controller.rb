@@ -8,7 +8,17 @@ class Api::TypeController < ApplicationController
 
   # GET /api/type/1 or /api/type/1.json
   def show
-
+    if @type.nil?
+      render json: {
+        result: {},
+        description: "Id doesnt exists"
+      }, status: :not_found
+    else
+      render json: {
+        result: @type,
+        description: "Id was found"
+      }, status: :ok
+    end
   end
 
   # GET /api/type/new
@@ -25,18 +35,30 @@ class Api::TypeController < ApplicationController
     @type = Type.new(type_params)
 
     if @type.save
-      render json: { message: "Created successfully" }
+      render json: {
+        result: {},
+        description: "Type was created successfully"
+      }, status: :ok
     else
-      render json: { message: "An error has occurred" }
+      render json: {
+        result: {},
+        description: "Id doesnt exists"
+      }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /api/type/1 or /api/type/1.json
   def update
     if @type.update(type_params)
-      render json: { message: "Updated successfully" }
+      render json: {
+        result: {},
+        description: "Type updated successfully"
+      }, status: :ok
     else
-      render json: { message: "An error has occurred" }
+      render json: {
+        result: {},
+        description: "Id doesnt exists"
+      }, status: :not_found
     end
   end
 
@@ -44,7 +66,10 @@ class Api::TypeController < ApplicationController
   def destroy
     @type.destroy
 
-    render json: { message: "Deleted successfully" }
+    render json: {
+      result: {},
+      description: "Type deleted successfully"
+    }, status: :ok
   end
 
   private
