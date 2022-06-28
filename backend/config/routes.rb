@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         get '/month/:wallet_id/:month', to: 'transaction#filter_by_month'
         get '/year/:wallet_id/:year', to: 'transaction#filter_by_year'
         get '/category/:wallet_id/:category', to: 'transaction#filter_by_category'
+        get '/report/:wallet_id', to: 'transaction#report'
       end
     end
 
