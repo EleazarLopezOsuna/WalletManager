@@ -4,12 +4,8 @@ one:
   user: one
   name: MyText
   active: false
-  inFlow: 9.99
-  outFlow: 9.99
 
 two:
   user: two
   name: MyText
   active: false
-  inFlow: 9.99
-  outFlow: 9.99

@@ -4,8 +4,6 @@ class CreateWallets < ActiveRecord::Migration[6.1]
       t.references :user, null: false, foreign_key: true
       t.text :name
       t.boolean :active
-      t.decimal :inFlow, precision: 10, scale: 2, default: 0
-      t.decimal :outFlow, precision: 10, scale: 2, default: 0
 
       t.timestamps
     end
