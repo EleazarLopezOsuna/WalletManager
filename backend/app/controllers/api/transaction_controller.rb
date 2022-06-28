@@ -1,6 +1,55 @@
 class Api::TransactionController < ApplicationController
   before_action :set_transaction, only: %i[ show edit update destroy ]
 
+  # GET /api/transaction/date/:wallet_id/:date
+  def filter_by_date
+    @transactions = Transaction.where(["wallet_id = ? and DATE(created_at) = ? ", params[:wallet_id], params[:date]])
+    check_transactions_filter
+  end
+
+  # GET /api/transaction/date/:wallet_id/:month
+  def filter_by_month
+    @transactions = Transaction.where(["wallet_id = ? and MONTH(created_at) = ? ", params[:wallet_id], params[:month]])
+    check_transactions_filter
+  end
+
+  # GET /api/transaction/date/:wallet_id/:year
+  def filter_by_year
+    @transactions = Transaction.where(["wallet_id = ? and YEAR(created_at) = ? ", params[:wallet_id], params[:year]])
+    check_transactions_filter
+  end
+
+  # GET /api/transaction/date/:wallet_id/:category
+  def filter_by_category
+    @transactions = Transaction.where(["wallet_id = ? and category_id = ? ", params[:wallet_id], params[:category]])
+    check_transactions_filter
+  end
+
+  def check_transactions_filter
+    if @transactions.blank?
+      render json: {
+        result: {},
+        description: "Wallet does not exists or does not have transactions"
+      }, status: :not_found
+    else
+      data = []
+      @transactions.each do |transaction|
+        json = {
+          id: transaction.id,
+          type: transaction.category.type.name,
+          category: transaction.category.name,
+          description: transaction.description,
+          amount: transaction.amount
+        }
+        data.push(json)
+      end
+      render json: {
+        result: data,
+        description: "Transactions found"
+      }, status: :ok
+    end
+  end
+
   # GET /api/transaction/my_transactions/:user_id
   def user_transactions
     @transactions = Transaction.joins(wallet: [:user]).where(["user_id = ? ", params[:user_id]])
@@ -107,6 +156,6 @@ class Api::TransactionController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def transaction_params
-    params.require(:transaction).permit(:wallet_id, :category_id, :description, :amount)
+    params.require(:transaction).permit(:wallet, :category, :description, :amount)
   end
 end
