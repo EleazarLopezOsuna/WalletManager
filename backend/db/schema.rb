@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_25_102356) do
+ActiveRecord::Schema.define(version: 2022_06_28_064428) do
 
   create_table "categories", charset: "utf8", force: :cascade do |t|
     t.bigint "type_id", null: false
@@ -38,9 +38,9 @@ ActiveRecord::Schema.define(version: 2022_06_25_102356) do
   end
 
   create_table "users", charset: "utf8", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "email", null: false
-    t.text "password", null: false
+    t.text "name"
+    t.text "email"
+    t.text "password"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -49,8 +49,6 @@ ActiveRecord::Schema.define(version: 2022_06_25_102356) do
     t.bigint "user_id", null: false
     t.text "name"
     t.boolean "active"
-    t.decimal "inFlow", precision: 10, scale: 2, default: "0.0"
-    t.decimal "outFlow", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_wallets_on_user_id"

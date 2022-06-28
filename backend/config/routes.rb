@@ -6,6 +6,10 @@ Rails.application.routes.draw do
       collection do
         get '/my_transactions/:user_id', to: 'transaction#user_transactions'
         get '/wallet_transactions/:wallet_id', to: 'transaction#wallet_transactions'
+        get '/date/:wallet_id/:date', to: 'transaction#filter_by_date'
+        get '/month/:wallet_id/:month', to: 'transaction#filter_by_month'
+        get '/year/:wallet_id/:year', to: 'transaction#filter_by_year'
+        get '/category/:wallet_id/:category', to: 'transaction#filter_by_category'
       end
     end
 
