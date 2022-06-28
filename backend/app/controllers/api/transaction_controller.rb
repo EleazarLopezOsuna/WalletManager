@@ -50,6 +50,50 @@ class Api::TransactionController < ApplicationController
     end
   end
 
+  # GET /api/transaction/report/:wallet_id
+  def report
+    result_obj =  ActiveRecord::Base.connection.execute("SELECT categories.name, SUM(transactions.amount) AS amount, types.name AS type FROM categories, transactions, types WHERE transactions.wallet_id = #{params[:wallet_id]} and transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY categories.name, types.name")
+    categories_data = []
+    result_obj.each do |row|
+      json = {
+        name: row[0],
+        amount: row[1],
+        type: row[2]
+      }
+      categories_data.push(json)
+    end
+
+    result_obj = ActiveRecord::Base.connection.execute("SELECT types.name as type, SUM(transactions.amount) as amount FROM categories, transactions, types WHERE transactions.wallet_id = #{params[:wallet_id]} and transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY types.name")
+    types_data = []
+    result_obj.each do |row|
+      json = {
+        name: row[0],
+        amount: row[1]
+      }
+      types_data.push(json)
+    end
+
+    result_obj = ActiveRecord::Base.connection.execute("SELECT DATE(transactions.created_at) as date, SUM(transactions.amount), types.name AS type FROM categories, transactions, types WHERE transactions.wallet_id = #{params[:wallet_id]} and transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY DATE(transactions.created_at), types.name")
+    dates_data = []
+    result_obj.each do |row|
+      json = {
+        name: row[0],
+        amount: row[1],
+        type: row[2]
+      }
+      dates_data.push(json)
+    end
+
+    render json: {
+      result: {
+        categories: categories_data,
+        types: types_data,
+        dates: dates_data
+      },
+      description: "Report created"
+    }, status: :ok
+  end
+
   # GET /api/transaction/my_transactions/:user_id
   def user_transactions
     @transactions = Transaction.joins(wallet: [:user]).where(["user_id = ? ", params[:user_id]])
