@@ -5,7 +5,7 @@ default: &default
   database: wallet_manager
   username: root
   password: root
-  # host: db
+  host: db
 
 development:
   <<: *default
