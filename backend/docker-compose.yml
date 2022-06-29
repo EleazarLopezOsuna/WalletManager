@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.7.38
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  rails:
+    image: jaredosuna/wallet_manager_api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+  db:
+    driver: local
