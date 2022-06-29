@@ -17,6 +17,25 @@ class Api::WalletController < ApplicationController
     end
   end
 
+  # GET /api/wallet/user/summary/1
+  def summary
+    result_obj = ActiveRecord::Base.connection.execute("SELECT wallets.name as wallet, SUM(transactions.amount) as total, types.name as type FROM wallets, transactions, categories, types WHERE wallets.user_id = #{params[:user_id]} AND transactions.wallet_id = wallets.id AND transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY wallet, type")
+    wallets_data = []
+    result_obj.each do |row|
+      json = {
+        wallet: row[0],
+        total: row[1],
+        type: row[2]
+      }
+      wallets_data.push(json)
+    end
+
+    render json: {
+      result: wallets_data,
+      description: "Report created"
+    }, status: :ok
+  end
+
   # GET /api/wallet/user/1 or /api/wallet/user/1.json
   def totals
     incoming = Wallet.where(["user_id = ?", params[:user_id]]).sum(:inFlow)
