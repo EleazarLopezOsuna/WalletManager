@@ -3,7 +3,7 @@ class Api::WalletController < ApplicationController
 
   # GET /api/wallet/my_wallet/1 or /api/wallet/my_wallet/1.json
   def user_wallets
-    @wallets = Wallet.select(:id, :name, :active, :inFlow, :outFlow, :created_at).all.where(["user_id = ? ", params[:user_id]])
+    @wallets = Wallet.select(:id, :name, :active, :created_at).all.where(["user_id = ? ", params[:user_id]])
     if @wallets.blank?
       render json: {
         result: {},
@@ -19,13 +19,14 @@ class Api::WalletController < ApplicationController
 
   # GET /api/wallet/user/summary/1
   def summary
-    result_obj = ActiveRecord::Base.connection.execute("SELECT wallets.name as wallet, SUM(transactions.amount) as total, types.name as type FROM wallets, transactions, categories, types WHERE wallets.user_id = #{params[:user_id]} AND transactions.wallet_id = wallets.id AND transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY wallet, type")
+    result_obj = ActiveRecord::Base.connection.execute("SELECT wallets.id as id, wallets.name as wallet, SUM(transactions.amount) as total, types.name as type FROM wallets, transactions, categories, types WHERE wallets.user_id = #{params[:user_id]} AND transactions.wallet_id = wallets.id AND transactions.category_id = categories.id AND categories.type_id = types.id GROUP BY wallet, type, id")
     wallets_data = []
     result_obj.each do |row|
       json = {
-        wallet: row[0],
-        total: row[1],
-        type: row[2]
+        id: row[0],
+        wallet: row[1],
+        total: row[2],
+        type: row[3]
       }
       wallets_data.push(json)
     end
@@ -33,21 +34,6 @@ class Api::WalletController < ApplicationController
     render json: {
       result: wallets_data,
       description: "Report created"
-    }, status: :ok
-  end
-
-  # GET /api/wallet/user/1 or /api/wallet/user/1.json
-  def totals
-    incoming = Wallet.where(["user_id = ?", params[:user_id]]).sum(:inFlow)
-    outgoing = Wallet.where(["user_id = ?", params[:user_id]]).sum(:outFlow)
-    total = incoming - outgoing
-    render json: {
-      result: {
-        inFlow: incoming,
-        outFlow: outgoing,
-        totalFlow: total
-      },
-      description: ""
     }, status: :ok
   end
 

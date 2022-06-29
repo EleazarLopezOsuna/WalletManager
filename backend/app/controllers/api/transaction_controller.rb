@@ -39,7 +39,8 @@ class Api::TransactionController < ApplicationController
           type: transaction.category.type.name,
           category: transaction.category.name,
           description: transaction.description,
-          amount: transaction.amount
+          amount: transaction.amount,
+          created_at: transaction.created_at
         }
         data.push(json)
       end
