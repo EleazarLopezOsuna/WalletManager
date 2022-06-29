@@ -3,7 +3,11 @@ class Api::CategoryController < ApplicationController
 
   # GET /api/category or /api/category.json
   def index
-    @category = Category.all
+    @categories = Category.select(:id, :name).all
+    render json: {
+      result: @categories,
+      description: "Success"
+    }, status: :ok
   end
 
   # GET /api/category/1 or /api/category/1.json
