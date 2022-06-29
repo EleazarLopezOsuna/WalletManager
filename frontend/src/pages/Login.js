@@ -28,6 +28,7 @@ const Login = () => {
                 .then(response => {
                     cookies.set('id', response['result'][0].id, {path: "/"})
                     cookies.set('name', response['result'][0].name, {path: "/"})
+                    window.location.href="./landing";
                 })
                 .catch( () => {
                     Swal.fire("Error", "Credentials does not match", "error").then()
