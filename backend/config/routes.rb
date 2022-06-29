@@ -9,7 +9,7 @@ Rails.application.routes.draw do
         get '/date/:wallet_id/:date', to: 'transaction#filter_by_date' #Ya
         get '/month/:wallet_id/:month', to: 'transaction#filter_by_month' #Ya
         get '/year/:wallet_id/:year', to: 'transaction#filter_by_year' #Ya
-        get '/category/:wallet_id/:category', to: 'transaction#filter_by_category' #Pendiente
+        get '/category/:wallet_id/:category', to: 'transaction#filter_by_category' #Ya
         get '/report/:wallet_id', to: 'transaction#report' #Pendiente
       end
     end

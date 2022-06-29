@@ -2,6 +2,9 @@ import React, {useEffect, useState} from 'react';
 import { Col, Container, Form, Row} from "react-bootstrap";
 import Cookies from "universal-cookie";
 import {NavBar} from "../components/nabvar/NavBar";
+import "./table.scss"
+import "./transactionItem.scss"
+import Swal from "sweetalert2";
 
 let cookies = new Cookies();
 
@@ -21,6 +24,7 @@ export const TransactionItem = ({state}) => {
                     url += 'transaction/wallet_transactions/' + state['wallet']
                     break;
                 case 'category':
+                    url += 'transaction/category/' + state['wallet'] + '/' + state['category']
                     break;
                 default:
                     url += 'transaction/' + state['filter'] + '/' + state['wallet'] + '/' + state['date']
@@ -71,12 +75,37 @@ export const Transaction = () => {
     const [state, setState] = useState({
         filter: 'full',
         wallet: '1',
+        category: '1',
         date: ''
     });
 
-    const handleFilter = async () => {
-        window.location.href="./transactions";
-    }
+    const [categories, setCategories] = useState([])
+    const [wallets, setWallets] = useState([])
+
+    useEffect(() => {
+        if(!cookies.get('id')){
+            Swal.fire("Error", "You must be logged in", "error").then( () => {
+                window.location.href="./";
+            })
+        }
+
+        const fetchData = async () => {
+            let response = await fetch(process.env.REACT_APP_API_ROUTE + 'wallet/my_wallets/' + cookies.get('id'))
+            let result = await response.json()
+            if(response.status === 200)
+                setWallets(result['result'])
+            else
+                setWallets([])
+
+            response = await fetch(process.env.REACT_APP_API_ROUTE + 'category')
+            result = await response.json()
+            if(response.status === 200)
+                setCategories(result['result'])
+            else
+                setCategories([])
+        }
+        fetchData()
+    }, [])
 
     const handleInputChange = (e) => {
         setState({
@@ -91,7 +120,6 @@ export const Transaction = () => {
             <Form>
                 <Row className="mb-3">
                     <Form.Group as={Col} controlId="formGridFilter">
-                        <Form.Label>Select Filter</Form.Label>
                         <Form.Select aria-label="Default select example"
                                      name="filter"
                                      onChange={handleInputChange}>
@@ -105,29 +133,30 @@ export const Transaction = () => {
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridWallet">
-                        <Form.Label>Select Wallet</Form.Label>
                         <Form.Select aria-label="Default select example"
                                      name="wallet"
                                      onChange={handleInputChange}>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            {
+                                wallets.map((element) => (
+                                    <option value={element['id']} >{element['name']}</option>
+                                ))
+                            }
                         </Form.Select>
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="formGridWallet">
-                        <Form.Label>Select Wallet</Form.Label>
+                    <Form.Group as={Col} controlId="formGridCategory">
                         <Form.Select aria-label="Default select example"
-                                     name="wallet"
+                                     name="category"
                                      onChange={handleInputChange}>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            {
+                                categories.map((element) => (
+                                    <option value={element['id']} >{element['name']}</option>
+                                ))
+                            }
                         </Form.Select>
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="formGridDate">
-                        <Form.Label>Date</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Day | Month | Year"

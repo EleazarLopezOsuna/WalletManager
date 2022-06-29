@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {Button, Form, Row, Col} from "react-bootstrap";
 import Swal from 'sweetalert2'
 import axios from "axios";
@@ -15,7 +15,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         if (userData.email === '' || userData.password === '') {
-            Swal.fire("Error", "User and Password must be provide", "warning").then()
+            Swal.fire("Error", "User and Password must be provided", "warning").then()
         } else {
             const json = {
                 email: userData.email,
@@ -42,6 +42,12 @@ const Login = () => {
             [e.target.name]: e.target.value
         })
     }
+
+    useEffect(() => {
+        if(cookies.get('id')){
+            window.location.href="./landing";
+        }
+    }, []);
 
     return (
         <div
