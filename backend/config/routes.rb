@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       collection do
         get '/my_wallets/:user_id', to: 'wallet#user_wallets'
         get '/user/:user_id', to: 'wallet#totals'
+        get '/user/summary/:user_id', to: 'wallet#summary'
       end
     end
 
