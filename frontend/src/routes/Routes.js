@@ -5,8 +5,8 @@ import Login from '../pages/Login'
 import {LandingPage} from "../pages/LandingPage";
 import {Wallets} from "../pages/Wallets";
 import {Transaction} from "../pages/Transaction";
-import {TransactionItem} from "../pages/TransactionItem";
 import {CreateTransaction} from "../pages/CreateTransaction";
+import {Report} from "../pages/Report";
 
 function Routes() {
     return (
@@ -17,6 +17,7 @@ function Routes() {
           <Route exact path="/wallet" component={Wallets}/>
           <Route exact path="/transaction" component={Transaction}/>
           <Route exact path="/new_transaction" component={CreateTransaction}/>
+          <Route exact path="/report" component={Report}/>
         </Switch>
       </Router>
   );
